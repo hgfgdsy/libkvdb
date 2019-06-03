@@ -4,7 +4,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 
 void may_crash() {
-	int x = rand()%4 +0;
+	int x = rand()%6 +0;
 	if(x == 0){
 		exit(0);
 	}
