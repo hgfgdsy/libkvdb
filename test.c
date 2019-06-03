@@ -11,6 +11,7 @@ void *func(void *arg){
 int main()
 {
 	kvdb_t db;
+	srand(time(NULL));
 	fork();
 /*	int fd = kvdb_open(&db,"cap.db");
 	printf("pid = %d : %d %d\n",getpid(),fd , db.data_fd);
