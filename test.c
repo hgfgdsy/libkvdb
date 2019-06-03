@@ -3,6 +3,7 @@
 void *func(void *arg){
 	kvdb_t *db = (kvdb_t *)arg;
 	int fd = kvdb_open(db,"cap.db");
+	kvdb_put(db,"123","ascvewvet");
 	printf("%d %d %d\n",fd,db->data_fd,db->log_fd);
 	return NULL;
 }
