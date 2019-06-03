@@ -216,11 +216,14 @@ int kvdb_put(kvdb_t *db, const char *key, const char *value) {
 
 char *kvdb_get(kvdb_t *db, const char *key) {
 	pthread_mutex_lock(&mutex);
-	if(db->status != 1) {return -1; pthread_mutex_unlock(&mutex);}
+	if(db->status != 1) {return NULL; pthread_mutex_unlock(&mutex);}
 	pthread_mutex_unlock(&mutex);
 
 	pthread_mutex_lock(&db->mlock);
 	file_lock(db);
+
+	char key_buf[32];
+	char value_buf[32];
 
 	int k;
 	off_t offset;
@@ -273,6 +276,7 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 		lseek(db->data_fd, offset, SEEK_SET);
 		char *diff_key = (char *)(malloc(l1+1));
 		int diff_key_read = read(db->data_fd, diff_key, l1);
+		if(diff_key_read < l1) continue;
 		if(strncmp(key,diff_key,l1) == 0) {
 			ret = (char *)malloc(l2+1);
 			lseek(db->data_fd, offset+l1+1, SEEK_SET);
