@@ -67,15 +67,13 @@ int main()
 	}
 	return 0;
 	*/
+	kvdb_t db;
+	char *ln = rand_filename();
+	kvdb_open(&db,ln);
 	for(int i=1;i<=3;i++){
 		fork();
 	}
-	srand(getpid());
-	printf("hello\n");
-	kvdb_t db;
-	char *ln = rand_filename();
-	printf("%s\n",ln);
-	kvdb_open(&db,ln);
+	srand(getpid());	
 	kvdb_put(&db,rand_key(),rand_value());
 	kvdb_close(&db);
 	return 0;
