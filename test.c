@@ -70,7 +70,7 @@ int main()
 	for(int i=1;i<=3;i++){
 		fork();
 	}
-	srand(time(NULL));
+	srand(getpid());
 	printf("hello\n");
 	kvdb_t db;
 	char *ln = rand_filename();
