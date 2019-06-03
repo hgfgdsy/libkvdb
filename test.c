@@ -8,14 +8,46 @@ void *func(void *arg){
 	return NULL;
 }
 
+char *rand_key(){
+	int len = rand()%127 +1;
+	char *ret = (char *)malloc(len);
+	for(int i=0;i<len;i++){
+		int c = rand()%26+0;
+		*(ret+i) = 'a'+c;
+	}
+	return ret;
+}
+
+char *rand_value(){{
+	int len = rand()&(1<<5) +1;
+	char *ret = (char *)malloc(len);
+	for(int i=0;i<len;i++){
+		int c = rand()%26+0;
+		*(ret+i) = 'a'+c;
+	}
+	return ret;
+}
+
+char *rand_filename(){
+	int len = rand()%20+1;
+	char *ret = (char *)malloc(len+3);
+	for(int i=0;i<len;i++){
+		int c = rand()%26+0;
+		*(ret+i) = 'a'+c;
+
+	}
+	*(ret+len) = '.';
+	*(ret+len+1) = 'd';
+	*(ret+len+2) = 'b';
+	return ret;
+}
+
+
 int main()
-{
+{/*
 	kvdb_t db;
 	srand(time(NULL));
 	pid_t pid = fork();
-/*	int fd = kvdb_open(&db,"cap.db");
-	printf("pid = %d : %d %d\n",getpid(),fd , db.data_fd);
-*/	
 	if(pid == 0){
 	pthread_t *t1 = malloc(sizeof(pthread_t));
 	pthread_create(t1,NULL,func,&db);
@@ -32,5 +64,15 @@ int main()
 	        else printf("%s\n",temp);
 	}
 	return 0;
+	*/
+	for(int i=1;i<=3;i++){
+		fork();
+	}
+	kvdb_t db;
+	kvdb_open(&db,rand_filename());
+	kvdb_put(&db,rand_key,rand_value);
+	kvdb_close(&db);
+	return 0;
+
 }
 
