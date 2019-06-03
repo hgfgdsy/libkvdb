@@ -232,6 +232,7 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 	int target = strlen(key);
 
 	for(k = 0; ; k++) {
+		printf("down\n");
 		lseek(db->log_fd, pace*k, SEEK_SET);
 		char *log_buf = (char *)malloc(70);
 		int realin = read(db->log_fd, log_buf, 66);
@@ -256,6 +257,7 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 	char *ret = NULL;
 
 	for(int j=k-1; j>=0; j--) {
+		printf("up\n");
 		lseek(db->log_fd, pace*j, SEEK_SET);
 		char *log_buf = (char *)malloc(70);
 		read(db->log_fd, log_buf, 66);
