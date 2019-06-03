@@ -1,5 +1,5 @@
 #include "kvdb.h"
-
+#include <sys/wait.h>
 void *func(void *arg){
 	kvdb_t *db = (kvdb_t *)arg;
 	int fd = kvdb_open(db,"cap.db");
