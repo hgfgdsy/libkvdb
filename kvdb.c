@@ -290,12 +290,14 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 		int l1 = atoi(key_buf);
 		int l2 = atoi(value_buf);
 		offset = offset - l1 - l2 - 2;
+		free((void *)log_buf);
 		if(l1 != target) continue;
 		lseek(db->data_fd, offset, SEEK_SET);
 		char *diff_key = (char *)(malloc(l1+1));
 		int diff_key_read = read(db->data_fd, diff_key, l1);
 		if(diff_key_read < l1) continue;
 		if(strncmp(key,diff_key,l1) == 0) {
+			free((void *)diff_key);
 			ret = (char *)malloc(l2+1);
 			if(ret == NULL) {
 				printf("malloc_fail\n");
@@ -306,6 +308,11 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 			if(diff_value_read < l2) ret = NULL;
 			else break;
 		}
+		else {
+			free((void *)diff_key);
+		}
+		
+		
 	}
 
 	file_unlock(db);
