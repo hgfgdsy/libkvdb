@@ -179,6 +179,7 @@ int kvdb_put(kvdb_t *db, const char *key, const char *value) {
 		int l1 = atoi(key_buf);
 		int l2 = atoi(value_buf);
 		offset = offset + l1 + l2 + 2;
+		free((void *)log_buf);
 	}
 	char mao[1] = {'\t'};
 	char end[1] = {'\n'};
@@ -192,6 +193,8 @@ int kvdb_put(kvdb_t *db, const char *key, const char *value) {
 	d2 = write(db->data_fd,(void *)mao, 1);
         d3 = write(db->data_fd,(void *)value,value_len);
 	d4 = write(db->data_fd,(void *)end, 1);
+
+	sync();
 
 	if((d1+d2+d3+d4) < (key_len+value_len+2)) ret = -1;
 
@@ -211,14 +214,76 @@ int kvdb_put(kvdb_t *db, const char *key, const char *value) {
 	return ret;
 }
 
+char *kvdb_get(kvdb_t *db, const char *key) {
+	pthread_mutex_lock(&mutex);
+	if(db->status != 1) {return -1; pthread_mutex_unlock(&mutex);}
+	pthread_mutex_unlock(&mutex);
 
+	pthread_mutex_lock(&db->mlock);
+	file_lock(db);
 
+	int k;
+	off_t offset;
+	int pace = 66;
 
+	int target = strlen(key);
 
+	for(k = 0; ; k++) {
+		lseek(db->log_fd, pace*k, SEEK_SET);
+		char *log_buf = (char *)malloc(70);
+		int realin = read(db->log_fd, log_buf, 66);
+		if(realin < 66) break;
+		if(log_buf[65] != '\n') break;
+		memset(key_buf,0,sizeof(key_buf));
+		memset(value_buf,0,sizeof(value_buf));
+		int kcnt = 0;
+		int vcnt = 0;
+		for(int i = 0; i < 32; i++) {
+			if(log_buf[i] != 0x20) key_buf[kcnt++] = log_buf[i];
+		}
+		for(int i = 33; i < 65; i++) {
+			if(log_buf[i] != 0x20) value_buf[vcnt++] = log_buf[i];
+		}
+		int l1 = atoi(key_buf);
+		int l2 = atoi(value_buf);
+		offset = offset + l1 + l2 + 2;
+		free((void *)log_buf);
+	}
 
+	char *ret = NULL;
 
+	for(int j=k-1; j>=0; j--) {
+		lseek(db->log_fd, pace*j, SEEK_SET);
+		char *log_buf = (char *)malloc(70);
+		read(db->log_fd, log_buf, 66);
+		memset(key_buf,0,sizeof(key_buf));
+		memset(value_buf,0,sizeof(value_buf));
+		int kcnt = 0;
+		int vcnt = 0;
+		for(int i = 0; i < 32; i++) {
+			if(log_buf[i] != 0x20) key_buf[kcnt++] = log_buf[i];
+		}
+		for(int i = 33; i < 65; i++) {
+			if(log_buf[i] != 0x20) value_buf[vcnt++] = log_buf[i];
+		}
+		int l1 = atoi(key_buf);
+		int l2 = atoi(value_buf);
+		offset = offset - l1 - l2 - 2;
+		if(l1 != target) continue;
+		lseek(db->data_fd, offset, SEEK_SET);
+		char *diff_key = (char *)(malloc(l1+1));
+		int diff_key_read = read(db->data_fd, diff_key, l1);
+		if(strncmp(key,diff_key,l1) == 0) {
+			ret = (char *)malloc(l2+1);
+			lseek(db->data_fd, offset+l1+1, SEEK_SET);
+			int diff_value_read = read(db->data_fd, ret, l2);
+			if(diff_value_read < l2) ret = NULL;
+			else break;
+		}
+	}
 
-
-char *kvdb_get(kvdb_t *db, const char *key);
-
+	file_unlock(db);
+	pthread_mutex_unlock(&db->mlock);
+	return ret;
+}
 
