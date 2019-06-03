@@ -12,7 +12,7 @@ int main()
 {
 	kvdb_t db;
 	srand(time(NULL));
-	pid _t pid = fork();
+	pid_t pid = fork();
 /*	int fd = kvdb_open(&db,"cap.db");
 	printf("pid = %d : %d %d\n",getpid(),fd , db.data_fd);
 */	
