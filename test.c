@@ -20,6 +20,8 @@ int main()
 	pthread_create(t2,NULL,func,&db);
 	pthread_join(*t1,NULL);
 	pthread_join(*t2,NULL);
+	char *temp = kvdb_get(db,"sdfe");
+	if(temp == NULL) printf("hello\n");
 	return 0;
 }
 
