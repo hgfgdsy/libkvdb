@@ -297,6 +297,10 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 		if(diff_key_read < l1) continue;
 		if(strncmp(key,diff_key,l1) == 0) {
 			ret = (char *)malloc(l2+1);
+			if(ret == NULL) {
+				printf("malloc_fail\n");
+				continue;
+			}
 			lseek(db->data_fd, offset+l1+1, SEEK_SET);
 			int diff_value_read = read(db->data_fd, ret, l2);
 			if(diff_value_read < l2) ret = NULL;
