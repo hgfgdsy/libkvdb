@@ -70,6 +70,7 @@ int main()
 	for(int i=1;i<=3;i++){
 		fork();
 	}
+	printf("hello\n");
 	kvdb_t db;
 	kvdb_open(&db,rand_filename());
 	kvdb_put(&db,rand_key(),rand_value());
