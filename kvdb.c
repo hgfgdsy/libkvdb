@@ -2,6 +2,15 @@
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;  
 
+
+void may_crash() {
+	int x = rand()%4 +0;
+	if(x == 0){
+		exit(0);
+	}
+}
+
+
 int file_lock(kvdb_t *db) 
 {
 	struct flock *datalock = &db->dlock;
@@ -116,6 +125,10 @@ int kvdb_close(kvdb_t *db) {
 	int label = 0;
         int cd,cl;
 	pthread_mutex_lock(&mutex);
+	if(db->status == 0) {
+		return -1;
+		pthread_mutex_unlock(&mutex);
+	}
 	db->status = 0;
 	cd = close(db->data_fd);
 	cl = close(db->log_fd);
@@ -191,10 +204,12 @@ int kvdb_put(kvdb_t *db, const char *key, const char *value) {
 	int d1,d2,d3,d4;
 	d1 = write(db->data_fd,(void *)key,key_len);
 	d2 = write(db->data_fd,(void *)mao, 1);
+	may_crash();
         d3 = write(db->data_fd,(void *)value,value_len);
 	d4 = write(db->data_fd,(void *)end, 1);
 
 	sync();
+	may_crash();
 
 	if((d1+d2+d3+d4) < (key_len+value_len+2)) ret = -1;
 
@@ -202,11 +217,12 @@ int kvdb_put(kvdb_t *db, const char *key, const char *value) {
 	lseek(db->log_fd, pace*k, SEEK_SET);
 	k1 = write(db->log_fd, (void *)full_key, 32);
 	k2 = write(db->log_fd, (void *)mao, 1);
+	may_crash();
 	k3 = write(db->log_fd, (void *)full_len, 32);
 	k4 = write(db->log_fd, (void *)end, 1);
 
 	if((k1+k2+k3+k4) < 66) ret = -1;
-
+	may_crash();
 	sync();
 
 	file_unlock(db);
