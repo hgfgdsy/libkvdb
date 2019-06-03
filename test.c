@@ -66,6 +66,7 @@ int main()
 	}
 	return 0;
 	*/
+	srand(time(NULL));
 	for(int i=1;i<=3;i++){
 		fork();
 	}
