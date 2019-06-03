@@ -226,7 +226,7 @@ char *kvdb_get(kvdb_t *db, const char *key) {
 	char value_buf[32];
 
 	int k;
-	off_t offset;
+	off_t offset = 0;
 	int pace = 66;
 
 	int target = strlen(key);
