@@ -19,7 +19,7 @@ char *rand_key(){
 	return ret;
 }
 
-char *rand_value(){{
+char *rand_value(){
 	int len = rand()%(1<<5) +1;
 	char *ret = (char *)malloc(len);
 	for(int i=0;i<len;i++){
