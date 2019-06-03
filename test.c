@@ -72,7 +72,9 @@ int main()
 	}
 	printf("hello\n");
 	kvdb_t db;
-	kvdb_open(&db,rand_filename());
+	char *ln = rand_filename();
+	printf("%s\n",ln);
+	kvdb_open(&db,ln);
 	kvdb_put(&db,rand_key(),rand_value());
 	kvdb_close(&db);
 	return 0;
