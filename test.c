@@ -1,5 +1,6 @@
 #include "kvdb.h"
 #include <sys/wait.h>
+/*
 void *func(void *arg){
 	kvdb_t *db = (kvdb_t *)arg;
 	int fd = kvdb_open(db,"cap.db");
@@ -7,7 +8,7 @@ void *func(void *arg){
 	printf("%d %d %d %d\n",fd,db->data_fd,db->log_fd,pd);
 	return NULL;
 }
-
+*/
 char *rand_key(){
 	int len = rand()%127 +1;
 	char *ret = (char *)malloc(len);
@@ -19,7 +20,7 @@ char *rand_key(){
 }
 
 char *rand_value(){{
-	int len = rand()&(1<<5) +1;
+	int len = rand()%(1<<5) +1;
 	char *ret = (char *)malloc(len);
 	for(int i=0;i<len;i++){
 		int c = rand()%26+0;
@@ -70,7 +71,7 @@ int main()
 	}
 	kvdb_t db;
 	kvdb_open(&db,rand_filename());
-	kvdb_put(&db,rand_key,rand_value);
+	kvdb_put(&db,rand_key(),rand_value());
 	kvdb_close(&db);
 	return 0;
 
