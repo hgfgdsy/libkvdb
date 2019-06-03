@@ -45,8 +45,8 @@ char *rand_filename(){
 
 
 int main()
-{/*
-	kvdb_t db;
+{
+/*	kvdb_t db;
 	srand(time(NULL));
 	pid_t pid = fork();
 	if(pid == 0){
