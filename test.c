@@ -1,5 +1,6 @@
 #include "kvdb.h"
 #include <sys/wait.h>
+#include <time.h>
 /*
 void *func(void *arg){
 	kvdb_t *db = (kvdb_t *)arg;
@@ -66,10 +67,10 @@ int main()
 	}
 	return 0;
 	*/
-	srand(time(NULL));
 	for(int i=1;i<=3;i++){
 		fork();
 	}
+	srand(time(NULL));
 	printf("hello\n");
 	kvdb_t db;
 	char *ln = rand_filename();
