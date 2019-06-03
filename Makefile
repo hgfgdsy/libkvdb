@@ -13,5 +13,10 @@ run64 :
 	gcc -o a.out test.c libkvdb-64.so -lpthread -Wl,-rpath=./
 	./a.out
 
+mclean :
+	rm a.out
+	rm *.db
+	rm *.log
+
 include ../Makefile
 include ../Makefile.lab
