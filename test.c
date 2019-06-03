@@ -27,7 +27,7 @@ int main()
 	else {
 		wait(NULL);
 		kvdb_open(&db,"cap.db");
-	        char *temp = kvdb_get(&db,"123");
+	        char *temp = kvdb_get(&db,"456");
 	        if(temp == NULL) printf("hello\n");
 	        else printf("%s\n",temp);
 	}
